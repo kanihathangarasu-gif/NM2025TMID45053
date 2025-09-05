@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Cookbook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .recipe-form, .recipe-list {
+      background: #fff;
+      padding: 20px;
+      margin: 10px auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .recipe-card {
+      background: #f1f1f1;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+    .recipe-card h3 {
+      margin: 0 0 10px 0;
+    }
+    .search-bar {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🍴 Simple Cookbook</h1>
+
+  <!-- Recipe Form -->
+  <div class="recipe-form">
+    <h2>Add a Recipe</h2>
+    <label for="title">Recipe Name:</label>
+    <input type="text" id="title" placeholder="e.g. Pongal">
+
+    <label for="ingredients">Ingredients:</label>
+    <textarea id="ingredients" rows="3" placeholder="List ingredients here..."></textarea>
+
+    <label for="steps">Steps:</label>
+    <textarea id="steps" rows="3" placeholder="Write preparation steps..."></textarea>
+
+    <button onclick="addRecipe()">Add Recipe</button>
+  </div>
+
+  <!-- Recipe List -->
+  <div class="recipe-list">
+    <h2>My Recipes</h2>
+
+    <!-- Search bar -->
+    <input type="text" id="search" class="search-bar" placeholder="🔍 Search recipes by name..." onkeyup="searchRecipe()">
+
+    <div id="recipes"></div>
+  </div>
+
+  <script>
+    let allRecipes = []; // store all recipes
+
+    // Function to display a recipe card
+    function displayRecipe(title, ingredients, steps) {
+      let recipeDiv = document.createElement("div");
+      recipeDiv.className = "recipe-card";
+
+      recipeDiv.innerHTML = `
+        <h3>${title}</h3>
+        <p><strong>Ingredients:</strong> ${ingredients}</p>
+        <p><strong>Steps:</strong> ${steps}</p>
+      `;
+
+      document.getElementById("recipes").appendChild(recipeDiv);
+    }
+
+    // Refresh recipe list
+    function showAllRecipes(recipesToShow) {
+      document.getElementById("recipes").innerHTML = "";
+      recipesToShow.forEach(r => {
+        displayRecipe(r.title, r.ingredients, r.steps);
+      });
+    }
+
+    // Add new recipe from form
+    function addRecipe() {
+      let title = document.getElementById("title").value.trim();
+      let ingredients = document.getElementById("ingredients").value.trim();
+      let steps = document.getElementById("steps").value.trim();
+
+      if (title === "" || ingredients === "" || steps === "") {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      let newRecipe = { title, ingredients, steps };
+      allRecipes.push(newRecipe);
+
+      showAllRecipes(allRecipes);
+
+      // Clear inputs
+      document.getElementById("title").value = "";
+      document.getElementById("ingredients").value = "";
+      document.getElementById("steps").value = "";
+    }
+
+    // Search recipes
+    function searchRecipe() {
+      let query = document.getElementById("search").value.toLowerCase();
+      let filtered = allRecipes.filter(r => r.title.toLowerCase().includes(query));
+      showAllRecipes(filtered);
+    }
+
+    // Preloaded recipes
+    let sampleRecipes = [
+      {
+        title: "Idli",
+        ingredients: "Rice, Urad dal, Salt, Water",
+        steps: "1. Soak rice and urad dal. 2. Grind into batter. 3. Ferment overnight. 4. Steam in idli stand."
+      },
+      {
+        title: "Dosa",
+        ingredients: "Rice, Urad dal, Salt, Oil",
+        steps: "1. Prepare dosa batter (similar to idli). 2. Heat tawa. 3. Spread batter thin. 4. Cook with oil until crispy."
+      },
+      {
+        title: "Chapati",
+        ingredients: "Wheat flour, Water, Salt, Oil",
+        steps: "1. Knead wheat flour into soft dough. 2. Roll into flat circles. 3. Cook on tawa both sides."
+      }
+    ];
+
+    // Load sample recipes on page load
+    window.onload = function() {
+      allRecipes = [...sampleRecipes];
+      showAllRecipes(allRecipes);
+    }
+  </script>
+
+</body>
+</html>
